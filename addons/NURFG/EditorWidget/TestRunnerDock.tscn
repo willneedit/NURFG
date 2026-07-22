@@ -1,49 +1,45 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene format=3 uid="uid://dh6y05v1m6l6s"]
 
-[ext_resource path="res://addons/NURFG/EditorWidget/TestRunnerDock.cs" type="Script" id=1]
+[ext_resource type="Script" uid="uid://bl7ljiwas7git" path="res://addons/NURFG/EditorWidget/TestRunnerDock.cs" id="1"]
 
-[node name="NUnit Runner" type="VBoxContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="NUnit Runner" type="VBoxContainer" unique_id=672301691]
+script = ExtResource("1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_right = 100.0
-margin_bottom = 20.0
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1989040545]
+layout_mode = 2
 
-[node name="RefreshButton" type="Button" parent="HBoxContainer"]
-margin_right = 60.0
-margin_bottom = 20.0
+[node name="RefreshButton" type="Button" parent="HBoxContainer" unique_id=1853486557]
+layout_mode = 2
 text = "Refresh"
 
-[node name="RunButton" type="Button" parent="HBoxContainer"]
-margin_left = 64.0
-margin_right = 100.0
-margin_bottom = 20.0
+[node name="RunButton" type="Button" parent="HBoxContainer" unique_id=749150480]
+layout_mode = 2
 text = "Run"
 
-[node name="VSplitContainer" type="VSplitContainer" parent="."]
-margin_top = 24.0
-margin_right = 100.0
-margin_bottom = 40.0
+[node name="RunFailedButton" type="Button" parent="HBoxContainer" unique_id=1707410718]
+layout_mode = 2
+text = "Run Failed"
+
+[node name="ClearResultsButton" type="Button" parent="HBoxContainer" unique_id=1549399616]
+layout_mode = 2
+text = "Clear Results"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="." unique_id=1853528860]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ResultTree" type="Tree" parent="VSplitContainer"]
-margin_right = 100.0
-margin_bottom = 2.0
+[node name="ResultTree" type="Tree" parent="VSplitContainer" unique_id=758737868]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TestOutputLabel" type="RichTextLabel" parent="VSplitContainer"]
-margin_top = 14.0
-margin_right = 100.0
-margin_bottom = 16.0
+[node name="TestOutputLabel" type="RichTextLabel" parent="VSplitContainer" unique_id=1226334560]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
+
+[connection signal="pressed" from="HBoxContainer/RefreshButton" to="." method="RefreshButton_Click"]
+[connection signal="pressed" from="HBoxContainer/RunButton" to="." method="RunButton_Click"]
+[connection signal="pressed" from="HBoxContainer/RunFailedButton" to="." method="RunFailedButton_Click"]
+[connection signal="pressed" from="HBoxContainer/ClearResultsButton" to="." method="ClearResultsButton_Click"]

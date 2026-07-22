@@ -19,6 +19,8 @@ namespace NURFG
 
         private Button _refreshButton;
         private Button _runButton;
+        private Button _runFailedButton;
+        private Button _clearResultsButton;
         private Tree _resultTree;
         private RichTextLabel _testOutputLabel;
 
@@ -28,14 +30,19 @@ namespace NURFG
 
             // Connect controls
             _refreshButton = (Button)GetNode("HBoxContainer/RefreshButton");
-            _refreshButton.Connect("pressed", Callable.From(() => RefreshButton_Click()));
+            // _refreshButton.Connect("pressed", Callable.From(RefreshButton_Click));
 
             _runButton = (Button)GetNode("HBoxContainer/RunButton");
-            _runButton.Connect("pressed", Callable.From(() => RunButton_Click()));
+            // _runButton.Connect("pressed", Callable.From(RunButton_Click));
+
+            _runFailedButton = (Button)GetNode("HBoxContainer/RunFailedButton");
+
+            _clearResultsButton = (Button)GetNode("HBoxContainer/ClearResultsButton");
+
 
             _resultTree = (Tree)GetNode("VSplitContainer/ResultTree");
-            _resultTree.Connect("item_selected", Callable.From(() => TestResultTree_ItemSelected()));
-            _resultTree.Connect("item_activated", Callable.From(() => TestResultTree_ItemActivated()));
+            _resultTree.Connect("item_selected", Callable.From(TestResultTree_ItemSelected));
+            _resultTree.Connect("item_activated", Callable.From(TestResultTree_ItemActivated));
 
             _testOutputLabel = (RichTextLabel)GetNode("VSplitContainer/TestOutputLabel");
         }
@@ -75,10 +82,23 @@ namespace NURFG
                 UpdateTestTreeItem(test);
         }
 
+        private void ClearResultsButton_Click()
+        {
+            _testResults.Clear();
+
+            foreach (var test in _testTreeItems.Keys)
+                UpdateTestTreeItem(test);
+        }
+
         private void RunButton_Click()
         {
             RefreshButton_Click();
             StartTestRun(new MatchEverythingTestFilter());
+        }
+
+        private void RunFailedButton_Click()
+        {
+            StartTestRun(new MatchFailedTestFilter(_testResults));
         }
 
         private void TestResultTree_ItemSelected()
@@ -99,17 +119,17 @@ namespace NURFG
 
         private void StartTestRun(ITestFilter filter)
         {
-            // Mark all of the tests matched by the filter as "not run".
-            var testsToClear = _testResults
-                .Keys
-                .Where(test => filter.Pass(test))
-                .ToArray();
+            // // Mark all of the tests matched by the filter as "not run".
+            // var testsToClear = _testResults
+            //     .Keys
+            //     .Where(filter.Pass)
+            //     .ToArray();
 
-            foreach (var test in testsToClear)
-            {
-                _testResults.Remove(test);
-                UpdateTestTreeItem(test);
-            }
+            // foreach (var test in testsToClear)
+            // {
+            //     _testResults.Remove(test);
+            //     UpdateTestTreeItem(test);
+            // }
 
             // Whenever a test starts or finishes, update its results and its
             // tree item.
@@ -139,6 +159,8 @@ namespace NURFG
 
             _refreshButton.Disabled = disabled;
             _runButton.Disabled = disabled;
+            _runFailedButton.Disabled = disabled;
+            _clearResultsButton.Disabled = disabled;
         }
 
 
@@ -253,13 +275,13 @@ namespace NURFG
 
             if (!_testResults.ContainsKey(test))
             {
-                _testOutputLabel.Text = "Test not run.";
+                _testOutputLabel.Text = $"{test.Name} (not run)";
                 return;
             }
 
             if (_testResults[test] == null)
             {
-                _testOutputLabel.Text = "Test in progress...";
+                _testOutputLabel.Text = $"{test.Name} (in progress...)";
                 return;
             }
 
