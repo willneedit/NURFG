@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.IO;
 
 namespace NURFG.Tests
 {
@@ -62,6 +63,18 @@ namespace NURFG.Tests
         {
             var node = new Node2D();
             node._Process(1337);
+        }
+
+        [Test]
+        public void This_Test_Expects_An_Exception()
+        {
+            static void Code_To_Be_Tested()
+            {
+                throw new IOException("File format unrecognized");
+            }
+
+            var ex = Assert.Throws<IOException>(Code_To_Be_Tested);
+            Assert.AreEqual("File format unrecognized", ex.Message);
         }
     }
 }
