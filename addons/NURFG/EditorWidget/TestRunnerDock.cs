@@ -145,7 +145,9 @@ namespace NURFG
         private void UpdateTestTreeItem(ITest test)
         {
             var treeItem = _testTreeItems[test];
-            treeItem.SetText(0, GetTestLabel(test));
+            // Need to be deferred, tests can run in worker threads, not
+            // main (aka UI) threads.
+            treeItem.CallDeferred(TreeItem.MethodName.SetText, 0, GetTestLabel(test));
 
             // Recursively update all ancestor items
             if (test.Parent != null)
