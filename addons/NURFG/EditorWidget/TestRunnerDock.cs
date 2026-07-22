@@ -232,11 +232,11 @@ namespace NURFG
             switch (state)
             {
                 case TestState.NotRun: return "?";
-                case TestState.InProgress: return "(...)";
+                case TestState.InProgress: return "⏳";
                 case TestState.Passed: return "✔";
-                case TestState.Failed: return "[FAILED]";
+                case TestState.Failed: return "❌";
                 case TestState.Inconclusive: return "?";
-                case TestState.Warning: return "[WARN]";
+                case TestState.Warning: return "⚠";
 
                 default: return $"[{state.ToString().ToUpper()}]";
             }
