@@ -17,34 +17,23 @@ namespace NURFG
         private Dictionary<ITest, TreeItem> _testTreeItems = new Dictionary<ITest, TreeItem>();
         private Dictionary<ITest, ITestResult> _testResults = new Dictionary<ITest, ITestResult>();
 
-        private Button _refreshButton;
-        private Button _runButton;
-        private Button _runFailedButton;
-        private Button _clearResultsButton;
-        private Tree _resultTree;
-        private RichTextLabel _testOutputLabel;
+        private Button _btn_refresh;
+        private Button _btn_run;
+        private Button _btn_runFailed;
+        private Button _btn_clearResults;
+        private Tree _tre_results;
+        private RichTextLabel _lbl_testOutput;
 
         public override void _Ready()
         {
             InitializeNUnitIfNeeded();
 
-            // Connect controls
-            _refreshButton = (Button)GetNode("HBoxContainer/RefreshButton");
-            // _refreshButton.Connect("pressed", Callable.From(RefreshButton_Click));
-
-            _runButton = (Button)GetNode("HBoxContainer/RunButton");
-            // _runButton.Connect("pressed", Callable.From(RunButton_Click));
-
-            _runFailedButton = (Button)GetNode("HBoxContainer/RunFailedButton");
-
-            _clearResultsButton = (Button)GetNode("HBoxContainer/ClearResultsButton");
-
-
-            _resultTree = (Tree)GetNode("VSplitContainer/ResultTree");
-            _resultTree.Connect("item_selected", Callable.From(TestResultTree_ItemSelected));
-            _resultTree.Connect("item_activated", Callable.From(TestResultTree_ItemActivated));
-
-            _testOutputLabel = (RichTextLabel)GetNode("VSplitContainer/TestOutputLabel");
+            _btn_refresh = (Button)GetNode("HBoxContainer/RefreshButton");
+            _btn_run = (Button)GetNode("HBoxContainer/RunButton");
+            _btn_runFailed = (Button)GetNode("HBoxContainer/RunFailedButton");
+            _btn_clearResults = (Button)GetNode("HBoxContainer/ClearResultsButton");
+            _tre_results = (Tree)GetNode("VSplitContainer/ResultTree");
+            _lbl_testOutput = (RichTextLabel)GetNode("VSplitContainer/TestOutputLabel");
         }
 
         public override void _Process(double delta)
@@ -74,7 +63,7 @@ namespace NURFG
         private void RefreshButton_Click()
         {
             _testTreeItems.Clear();
-            _resultTree.Clear();
+            _tre_results.Clear();
 
             CreateTreeItemForTest(_nunit.Runner.LoadedTest);
 
@@ -103,7 +92,7 @@ namespace NURFG
 
         private void TestResultTree_ItemSelected()
         {
-            var selectedItem = _resultTree.GetSelected();
+            var selectedItem = _tre_results.GetSelected();
             ITest selectedTest = GetTestFromTreeItem(selectedItem);
             DisplayTestOutput(selectedTest);
         }
@@ -111,7 +100,7 @@ namespace NURFG
         private void TestResultTree_ItemActivated()
         {
             // Run the selected test
-            var selectedItem = _resultTree.GetSelected();
+            var selectedItem = _tre_results.GetSelected();
             ITest selectedTest = GetTestFromTreeItem(selectedItem);
             StartTestRun(new MatchDescendantsOfFilter(selectedTest));
         }
@@ -119,20 +108,6 @@ namespace NURFG
 
         private void StartTestRun(ITestFilter filter)
         {
-            // // Mark all of the tests matched by the filter as "not run".
-            // var testsToClear = _testResults
-            //     .Keys
-            //     .Where(filter.Pass)
-            //     .ToArray();
-
-            // foreach (var test in testsToClear)
-            // {
-            //     _testResults.Remove(test);
-            //     UpdateTestTreeItem(test);
-            // }
-
-            // Whenever a test starts or finishes, update its results and its
-            // tree item.
             var testListener = new LambdaListener
             {
                 TestStartedCallback = (test) =>
@@ -157,10 +132,10 @@ namespace NURFG
         {
             bool disabled = !enabled;
 
-            _refreshButton.Disabled = disabled;
-            _runButton.Disabled = disabled;
-            _runFailedButton.Disabled = disabled;
-            _clearResultsButton.Disabled = disabled;
+            _btn_refresh.Disabled = disabled;
+            _btn_run.Disabled = disabled;
+            _btn_runFailed.Disabled = disabled;
+            _btn_clearResults.Disabled = disabled;
         }
 
 
@@ -170,6 +145,7 @@ namespace NURFG
             // Need to be deferred, tests can run in worker threads, not
             // main (aka UI) threads.
             treeItem.CallDeferred(TreeItem.MethodName.SetText, 0, GetTestLabel(test));
+            DisplayTestOutput(test);
 
             // Recursively update all ancestor items
             if (test.Parent != null)
@@ -264,28 +240,32 @@ namespace NURFG
             }
         }
 
-
         private void DisplayTestOutput(ITest test)
         {
-            if (test == null)
+            if (test != GetTestFromTreeItem(_tre_results.GetSelected())) return;
+
+            _lbl_testOutput.SetDeferred(RichTextLabel.PropertyName.Text, GetTestOutput(test));
+        }
+
+        private string GetTestOutput(ITest test)
+        {
+            var builder = new System.Text.StringBuilder();
+
+            void PrintIfNotEmpty(string msg)
             {
-                _testOutputLabel.Text = "";
-                return;
+                if (!string.IsNullOrWhiteSpace(msg))
+                    builder.AppendLine(msg);
             }
+
+            if (test == null)
+                return string.Empty;
 
             if (!_testResults.ContainsKey(test))
-            {
-                _testOutputLabel.Text = $"{test.Name} (not run)";
-                return;
-            }
+                return $"{test.Name} (not run)";
 
             if (_testResults[test] == null)
-            {
-                _testOutputLabel.Text = $"{test.Name} (in progress...)";
-                return;
-            }
+                return $"{test.Name} (in progress...)";
 
-            var builder = new System.Text.StringBuilder();
             var testResult = _testResults[test];
 
             builder.AppendLine(testResult.Name);
@@ -295,13 +275,7 @@ namespace NURFG
             if (testResult.ResultState.Status != TestStatus.Passed)
                 PrintIfNotEmpty(testResult.StackTrace);
 
-            _testOutputLabel.Text = builder.ToString();
-
-            void PrintIfNotEmpty(string msg)
-            {
-                if (!string.IsNullOrWhiteSpace(msg))
-                    builder.AppendLine(msg);
-            }
+            return builder.ToString();
         }
 
         private void CreateTreeItemForTest(ITest test)
@@ -314,7 +288,7 @@ namespace NURFG
                 ? null
                 : _testTreeItems[test.Parent];
 
-            var treeItem = _resultTree.CreateItem(parentTreeItem);
+            var treeItem = _tre_results.CreateItem(parentTreeItem);
             _testTreeItems[test] = treeItem;
 
             // Create tree items for all child tests
