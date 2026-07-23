@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://da86utq55ddm"]
+
+[ext_resource type="Script" uid="uid://k5eencj1f7vu" path="res://addons/NURFG/SceneAddin/TesterScene.cs" id="1_b1gm2"]
+[ext_resource type="PackedScene" uid="uid://dh6y05v1m6l6s" path="res://addons/NURFG/EditorWidget/TestRunnerDock.tscn" id="1_k0043"]
+
+[node name="TesterScene" type="Node" unique_id=966977502]
+script = ExtResource("1_b1gm2")
+
+[node name="NUnit Runner" parent="." unique_id=672301691 instance=ExtResource("1_k0043")]
