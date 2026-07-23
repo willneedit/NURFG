@@ -14,8 +14,8 @@ namespace NURFG
     {
         private FrameworkController _nunit;
 
-        private Dictionary<ITest, TreeItem> _testTreeItems = new Dictionary<ITest, TreeItem>();
-        private Dictionary<ITest, ITestResult> _testResults = new Dictionary<ITest, ITestResult>();
+        private readonly Dictionary<ITest, TreeItem> _testTreeItems = new Dictionary<ITest, TreeItem>();
+        private readonly Dictionary<ITest, ITestResult> _testResults = new Dictionary<ITest, ITestResult>();
 
         private Button _btn_refresh;
         private Button _btn_run;
@@ -26,6 +26,8 @@ namespace NURFG
 
         public override void _Ready()
         {
+            base._Ready();
+            
             InitializeNUnitIfNeeded();
 
             _btn_refresh = (Button)GetNode("HBoxContainer/RefreshButton");
@@ -34,6 +36,8 @@ namespace NURFG
             _btn_clearResults = (Button)GetNode("HBoxContainer/ClearResultsButton");
             _tre_results = (Tree)GetNode("VSplitContainer/ResultTree");
             _lbl_testOutput = (RichTextLabel)GetNode("VSplitContainer/TestOutputLabel");
+
+            RefreshButton_Click();
         }
 
         public override void _Process(double delta)
