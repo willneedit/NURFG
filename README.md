@@ -1,9 +1,6 @@
 # NURFG: NUnit Runner For Godot
 
-This is an editor plugin for Godot 3.4 mono.  As the name suggests, it locates
-and runs NUnit tests.
-
-![screenshot](screenshots/screenshot.png "screenshot")
+This is an editor plugin for Godot 4.7 (and up) mono.  As the name suggests, it locates and runs NUnit tests.
 
 # Organizing your project
 Read this before installing.
@@ -25,9 +22,12 @@ The [Installation](#installation) section will walk you through setting up your
 
 # Installation
 
-1. [Install NUnit(without shipping it with your game)](#install-nunit-without-shipping-it-with-your-game)
-1. [Exclude your tests from the release build](#exclude-your-tests-from-the-release-build)
-1. [Install the NURFG plugin in your project](#installing-nurfg)
+- [NURFG: NUnit Runner For Godot](#nurfg-nunit-runner-for-godot)
+- [Organizing your project](#organizing-your-project)
+- [Installation](#installation)
+  - [Install NUnit (without shipping it with your game)](#install-nunit-without-shipping-it-with-your-game)
+  - [Exclude your tests from the release build](#exclude-your-tests-from-the-release-build)
+  - [Installing NURFG](#installing-nurfg)
 
 ## Install NUnit (without shipping it with your game)
 First, you need to install the NUnit nuget package in your game's .csproj file.
@@ -87,18 +87,24 @@ Your final .csproj file will look something like this:
 ```
 
 ## Installing NURFG
-Clone this repo and copy/paste the "addons" folder into your project.  Your
-folder structure should look like this:
+- Clone this repo 
+- Copy/paste or make a symbolic link to the "addons/NURFG" folder into your project's "addons" folder.
+- Similarly, you *can* copy/paste/make a symbolic link to the "Tests" into your project's "Tests" folder.
+  - The "Tests" folder is purely optional, it's a handy reference for designing tests cases and test suites.
 
-```
-* addons/
-    * NURFG/
-* Tests/
-    * your tests go here
-* YOUR_GAME_NAME.csproj
-* YOUR_GAME_NAME.sln
-* project.godot
-```
+Your folder structure should look like this. (Note the arrows in the folder icons, indicating they are links, no copies.)
 
-Finally, enable the plugin from the project settings window:
+![screenshot File system](screenshots/screenshotFileSystem.png "screenshot File system")
+
+- For running tests in the **edit** mode, enable the NURFG plugin in the Project Settings.
+
 ![enable addon](screenshots/EnableAddon.png)
+- Once done, you'd see a new panel similar to this:
+
+![screenshot Dock](screenshots/screenshotDock.png "screenshot Dock")
+
+- For running tests in the **play** mode, drag and drop the **TesterScene** (res://addons/NURFG/SceneAddin/tester_scene.tscn) into the scene (typically your main scene, or a blank scene) in question.
+
+![screenshot AddIn](screenshots/screenshotAddIn.png "screenshot AddIn")
+
+Once done, you'd see a similar panel as a HUD as soon as you press 'play' in the editor or start a debugging session.
