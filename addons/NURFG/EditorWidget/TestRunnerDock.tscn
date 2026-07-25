@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bl7ljiwas7git" path="res://addons/NURFG/EditorWidget/TestRunnerDock.cs" id="1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y0fuh"]
+bg_color = Color(0, 0, 0, 0.53333336)
+
 [node name="NUnit Runner" type="VBoxContainer" unique_id=672301691]
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -42,6 +45,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_y0fuh")
 
 [connection signal="pressed" from="HBoxContainer/RefreshButton" to="." method="RefreshButton_Click"]
 [connection signal="pressed" from="HBoxContainer/RunButton" to="." method="RunButton_Click"]
