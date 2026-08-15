@@ -1,28 +1,37 @@
 #if TOOLS
 using Godot;
-using System;
 
 namespace NURFG
 {
     [Tool]
     public partial class Plugin : EditorPlugin
     {
-        private Control _dock;
+        private EditorDock _dock = null;
+
+        private Control _dockContent;
 
         public override void _EnterTree()
         {
-            _dock = (Control)GD.Load<PackedScene>("addons/NURFG/EditorWidget/TestRunnerDock.tscn").Instantiate();
-            AddControlToDock(DockSlot.RightBl, _dock);
+            _dock = new()
+            {
+                Title = "Test Runner",
+                DefaultSlot = EditorDock.DockSlot.RightBl
+            };
+
+            _dockContent = (Control)GD.Load<PackedScene>("addons/NURFG/EditorWidget/TestRunnerDock.tscn").Instantiate();
+            _dock.AddChild(_dockContent);
+            AddDock(_dock);
         }
 
         public override void _ExitTree()
         {
             // Clean-up of the plugin goes here.
             // Remove the dock.
-            RemoveControlFromDocks(_dock);
 
             // Erase the control from the memory.
-            _dock?.Free();
+            RemoveDock(_dock);
+            _dock?.QueueFree();
+            _dock = null;
         }
     }
 }

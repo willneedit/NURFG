@@ -1,5 +1,4 @@
 #if TOOLS
-using System;
 using System.Collections.Generic;
 using NUnit.Framework.Interfaces;
 
