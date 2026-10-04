@@ -64,7 +64,7 @@ namespace NURFG
         public bool IsExplicitMatch(ITest test) => IsDescendantOf(_possibleParent, test);
         public bool Pass(ITest test) => IsDescendantOf(_possibleParent, test);
 
-        private bool IsDescendantOf(ITest possibleParent, ITest possibleChild)
+        private static bool IsDescendantOf(ITest possibleParent, ITest possibleChild)
         {
             if (possibleChild == possibleParent)
                 return true;

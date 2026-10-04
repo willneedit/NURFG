@@ -229,7 +229,7 @@ namespace NURFG
             Passed = 6
         }
 
-        private string TestStateToIcon(TestState state)
+        private static string TestStateToIcon(TestState state)
         {
             switch (state)
             {
