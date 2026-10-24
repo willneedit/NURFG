@@ -2,29 +2,21 @@ using Godot;
 
 namespace NURFG
 {
-#if TOOLS
 	public partial class TesterScene : Node
 	{
-		public static Node RootNode { get; private set; }
+		public static Window Root { get; private set; } = null;
+		public static Node MainScene { get; private set; } = null;
 
+#if TOOLS
 		// Called when the node enters the scene tree for the first time.
 		public override void _Ready()
 		{
 			base._Ready();
 
-			RootNode = GetNode("/root").GetChild(0);
+			Root = GetTree().Root;
+			MainScene = GetTree().CurrentScene;
 		}
-
-		// Called every frame. 'delta' is the elapsed time since the previous frame.
-		public override void _Process(double delta)
-		{
-		}
-	}
 #else
-	public partial class TesterScene : Node
-	{
-		public static Node RootNode { get; private set; }
-
 		// Called when the node enters the scene tree for the first time.
 		public override void _Ready()
 		{
@@ -32,11 +24,6 @@ namespace NURFG
 
 			QueueFree();
 		}
-
-		// Called every frame. 'delta' is the elapsed time since the previous frame.
-		public override void _Process(double delta)
-		{
-		}
-	}
 #endif
+	}
 }
